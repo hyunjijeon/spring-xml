@@ -1,0 +1,50 @@
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+  <display-name>Spring MVC with xml configuration</display-name>
+
+  <!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+  <context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/root-context.xml</param-value>
+	</context-param>
+
+  <!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+  <!-- DispatcherServlet을 dispatcher 이름으로 서블릿을 등록 -->
+  <servlet>
+    <servlet-name>dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!-- default 라 주석 
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
+    </init-param> -->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <!-- 
+    / 루트로 들어오는 요청을 dispatcher 서블릿이 처리하겟음 
+    /* 는 들어오는 모든 요청을 처리하는것  -> dispatcher에서 jsp 및 정적자원까지 처리한다는 의미가 되버림
+  -->
+  <!-- 
+    DefaultServlet
+      서블릿 매핑 URL에 걸리지 않는 요청들을 처리 (jsp, spring controller mapping 들 제외한 것들 처리)
+      정적 자원(html, css, js, image) 요청은 서블릿 컨테이너에 내장되어 있는 DefaultServlet에서 처리됨
+   -->
+  <!-- 
+    JspServlet
+      JSP는 정적자원과 달리 서블릿으로 변환되서 동작하므로 서블릿 컨테이너에 내장되어 있는 JspServlet에서 처리됨 
+  -->
+  <!-- 
+    DispatcherServlet이 /로 설정해서 tomcat의 설정이 무시되어, DefaultServlet이 동작 할 수 없음(정적자원처리불가능) 
+    dispatcher-servlet.xml 설정에 <mvc:default-servlet-handler /> 설정을 추가하여 해결 가능
+  -->
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+</web-app>
